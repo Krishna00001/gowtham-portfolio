@@ -1,9 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const GlowCard = ({ children, identifier }) => {
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
+    setIsMounted(true);
+
+    // Only run this effect on the client side
+    if (typeof window === "undefined") return;
+
     const container = document.querySelector(`.glow-container-${identifier}`);
     const cards = document.querySelectorAll(`.glow-card-${identifier}`);
 
@@ -54,7 +61,7 @@ const GlowCard = ({ children, identifier }) => {
     return () => {
       document.body.removeEventListener("pointermove", updateGlowEffect);
     };
-  }, [identifier]);
+  }, [identifier, isMounted]);
 
   return (
     <div className={`glow-container-${identifier} glow-container`}>

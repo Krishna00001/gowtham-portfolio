@@ -26,7 +26,7 @@ export default async function Home() {
   // const blogs = await getData();
 
   return (
-    <div suppressHydrationWarning>
+    <div>
       <HeroSection />
       <AboutSection />
       <Experience />
