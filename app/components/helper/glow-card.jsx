@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-const GlowCard = ({ children , identifier}) => {
+const GlowCard = ({ children, identifier }) => {
   useEffect(() => {
-    const CONTAINER = document.querySelector(`.glow-container-${identifier}`);
-    const CARDS = document.querySelectorAll(`.glow-card-${identifier}`);
+    const container = document.querySelector(`.glow-container-${identifier}`);
+    const cards = document.querySelectorAll(`.glow-card-${identifier}`);
 
-    const CONFIG = {
+    const config = {
       proximity: 40,
       spread: 80,
       blur: 12,
@@ -16,61 +16,51 @@ const GlowCard = ({ children , identifier}) => {
       opacity: 0,
     };
 
-    const UPDATE = (event) => {
-      for (const CARD of CARDS) {
-        const CARD_BOUNDS = CARD.getBoundingClientRect();
+    const updateGlowEffect = (event) => {
+      cards.forEach((card) => {
+        const bounds = card.getBoundingClientRect();
+        const isActive =
+          event?.x > bounds.left - config.proximity &&
+          event?.x < bounds.right + config.proximity &&
+          event?.y > bounds.top - config.proximity &&
+          event?.y < bounds.bottom + config.proximity;
 
-        if (
-          event?.x > CARD_BOUNDS.left - CONFIG.proximity &&
-          event?.x < CARD_BOUNDS.left + CARD_BOUNDS.width + CONFIG.proximity &&
-          event?.y > CARD_BOUNDS.top - CONFIG.proximity &&
-          event?.y < CARD_BOUNDS.top + CARD_BOUNDS.height + CONFIG.proximity
-        ) {
-          CARD.style.setProperty('--active', 1);
-        } else {
-          CARD.style.setProperty('--active', CONFIG.opacity);
-        }
+        card.style.setProperty("--active", isActive ? 1 : config.opacity);
 
-        const CARD_CENTER = [
-          CARD_BOUNDS.left + CARD_BOUNDS.width * 0.5,
-          CARD_BOUNDS.top + CARD_BOUNDS.height * 0.5,
-        ];
+        const centerX = bounds.left + bounds.width / 2;
+        const centerY = bounds.top + bounds.height / 2;
+        let angle =
+          (Math.atan2(event?.y - centerY, event?.x - centerX) * 180) / Math.PI;
+        angle = angle < 0 ? angle + 360 : angle;
 
-        let ANGLE =
-          (Math.atan2(event?.y - CARD_CENTER[1], event?.x - CARD_CENTER[0]) *
-            180) /
-          Math.PI;
-
-        ANGLE = ANGLE < 0 ? ANGLE + 360 : ANGLE;
-
-        CARD.style.setProperty('--start', ANGLE + 90);
-      }
+        card.style.setProperty("--start", angle + 90);
+      });
     };
 
-    document.body.addEventListener('pointermove', UPDATE);
+    document.body.addEventListener("pointermove", updateGlowEffect);
 
-    const RESTYLE = () => {
-      CONTAINER.style.setProperty('--gap', CONFIG.gap);
-      CONTAINER.style.setProperty('--blur', CONFIG.blur);
-      CONTAINER.style.setProperty('--spread', CONFIG.spread);
-      CONTAINER.style.setProperty(
-        '--direction',
-        CONFIG.vertical ? 'column' : 'row'
+    if (container) {
+      container.style.setProperty("--gap", config.gap);
+      container.style.setProperty("--blur", config.blur);
+      container.style.setProperty("--spread", config.spread);
+      container.style.setProperty(
+        "--direction",
+        config.vertical ? "column" : "row"
       );
-    };
+    }
 
-    RESTYLE();
-    UPDATE();
+    updateGlowEffect();
 
-    // Cleanup event listener
     return () => {
-      document.body.removeEventListener('pointermove', UPDATE);
+      document.body.removeEventListener("pointermove", updateGlowEffect);
     };
   }, [identifier]);
 
   return (
     <div className={`glow-container-${identifier} glow-container`}>
-      <article className={`glow-card glow-card-${identifier} h-fit cursor-pointer border border-[#2a2e5a] transition-all duration-300 relative bg-[#101123] text-gray-200 rounded-xl hover:border-transparent w-full`}>
+      <article
+        className={`glow-card glow-card-${identifier} h-fit cursor-pointer border border-[#2a2e5a] transition-all duration-300 relative bg-[#101123] text-gray-200 rounded-xl hover:border-transparent w-full`}
+      >
         <div className="glows"></div>
         {children}
       </article>
