@@ -11,12 +11,12 @@ import Skills from "./components/homepage/skills";
 export default function Home() {
   return (
     <div suppressHydrationWarning>
-      {/* <HeroSection /> */}
-      <AboutSection />
+      <HeroSection />
+      {/* <AboutSection />
       <Experience />
       <Skills />
       <Projects />
-      <Education />
+      <Education /> */}
       {/* <Blog blogs={blogs} /> */}
       <ContactSection />
     </div>
