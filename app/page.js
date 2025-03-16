@@ -11,11 +11,11 @@ export default function Home() {
   return (
     <div suppressHydrationWarning>
       <HeroSection />
-      <AboutSection />
-      <Experience />
-      {/* <Skills />
+      {/* <AboutSection />
+      <Experience /> */}
+      <Skills />
       <Projects />
-      <Education /> */}
+      <Education />
       {/* <Blog blogs={blogs} /> */}
       <ContactSection />
     </div>
